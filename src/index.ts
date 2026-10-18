@@ -66,7 +66,7 @@ app.delete("/todos/:id", async (req, res) => {
 app.patch("/todos/:id", async (req, res) => {
   const todoId = Number(req.params.id);
   const todoTitle = req.body.title ?? null;
-  const todoDescription = req.body.description ?? null; // <--- เพิ่มตรงนี้
+  const todoDescription = req.body.description ?? null;
   const todoCompleted = req.body.completed ?? null;
 
   const query = await pool.query(
