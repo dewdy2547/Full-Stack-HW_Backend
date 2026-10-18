@@ -38,9 +38,12 @@ app.get("/todos_query", async (req, res) => {
 });
 
 app.post("/todos", async (req, res) => {
+  const title = req.body.title || "New Todo";
+  const description = req.body.description || null; // <--- เพิ่มตรงนี้
+
   const query = await pool.query(
-    "INSERT INTO todos (title) VALUES ($1) RETURNING *;",
-    [req.body.title || "New Todo"],
+    "INSERT INTO todos (title, description) VALUES ($1, $2) RETURNING *;",
+    [title, description],
   );
   res.status(201).json(query.rows);
 });
@@ -63,10 +66,12 @@ app.delete("/todos/:id", async (req, res) => {
 app.patch("/todos/:id", async (req, res) => {
   const todoId = Number(req.params.id);
   const todoTitle = req.body.title ?? null;
+  const todoDescription = req.body.description ?? null; // <--- เพิ่มตรงนี้
   const todoCompleted = req.body.completed ?? null;
+
   const query = await pool.query(
-    "UPDATE todos SET title = COALESCE($1, title), completed = COALESCE($2, completed) WHERE id = $3 RETURNING *;",
-    [todoTitle, todoCompleted, todoId],
+    "UPDATE todos SET title = COALESCE($1, title), description = COALESCE($2, description), completed = COALESCE($3, completed) WHERE id = $4 RETURNING *;",
+    [todoTitle, todoDescription, todoCompleted, todoId],
   );
   res.status(200).json(query.rows);
 });
